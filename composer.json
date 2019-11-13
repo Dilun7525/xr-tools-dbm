@@ -1,0 +1,22 @@
+{
+  "name": "1kmenu/xr-tools-dbm",
+  "description": "Database Management tools",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Admin",
+      "email": "support@1000.menu"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.3",
+    "ext-pdo": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "XrTools\\DBM\\": "src"
+    }
+  }
+}

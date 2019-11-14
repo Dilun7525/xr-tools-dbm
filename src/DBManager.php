@@ -609,7 +609,7 @@ class DBManager{
 	 *
 	 * @return array|boolean    Returned data array or FALSE when failed
 	 */
-	function getList(string $sql, array $values = [], array $params = []){
+	public function getList(string $sql, array $values = [], array $params = []){
 		if(!$sql){
 			return false;
 		}
@@ -698,7 +698,7 @@ class DBManager{
 	 *
 	 * @return string|boolean Returned cell string or FALSE on error
 	 */
-	function getVal(string $sql, array $values = [], array $params = []){
+	public function getVal(string $sql, array $values = [], array $params = []){
 		if(!$sql){
 			return false;
 		}
@@ -771,7 +771,7 @@ class DBManager{
 	/**
 	 * MySQL transaction start
 	 */
-	function transactionStart(){
+	public function transactionStart(){
 		// lazy connection
 		if(!$this->setInstancePDO()){
 			return false;
@@ -783,7 +783,7 @@ class DBManager{
 	/**
 	 * MySQL transaction rollback
 	 */
-	function rollBack(){
+	public function rollBack(){
 		// lazy connection
 		if(!$this->setInstancePDO()){
 			return false;
@@ -795,12 +795,44 @@ class DBManager{
 	/**
 	 * MySQL transaction commit
 	 */
-	function commit(){
+	public function commit(){
 		// lazy connection
 		if(!$this->setInstancePDO()){
 			return false;
 		}
 		
 		return $this->instancePDO->commit();
+	}
+	
+	
+	/**
+	 * Sorts a multi dynamic array by one of the keys (replacing SORT BY in MySQL)
+	 * @param  array   $arr         Array to sort
+	 * @param  string  $by_key      Key to sort the array by
+	 * @param  integer $method      Sorting method (use constants: SORT_ASC / SORT_DESC). Default: SORT_ASC
+	 * @param  integer $method_type Sorting method type (see <u>sort_flag</u> in <a href="http://php.net/manual/en/function.sort.php">PHP manual</a>). Default: SORT_NUMERIC
+	 * @return array                Sorted array
+	 */
+	static function sort_by_array_key($arr, $by_key, $method = SORT_ASC, $method_type = SORT_NUMERIC){
+		if(!$arr)
+			return array();
+		// we translate the keys into a text format, because otherwise they array_multisort does not remember
+		$keys_order = array();
+		$tmp = array();
+		foreach ($arr as $k_index => $k_arr){
+			$keys_order['key-' . $k_index] = isset($k_arr[$by_key]) ? $k_arr[$by_key] : 0;
+			$tmp['key-' . $k_index] = $k_arr;
+			unset($arr[$k_index]);
+		}
+		unset($arr);
+		
+		// to remember the keys of the same values
+		$order_dupl = range(1, count($keys_order));
+		
+		// sort
+		array_multisort($keys_order, $method_type, $method, $order_dupl, SORT_ASC, $tmp);
+		
+		// Delete text keys and return
+		return array_values($tmp);
 	}
 }

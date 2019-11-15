@@ -158,9 +158,9 @@ class MemcachedManager{
 	 *
 	 * @param  string|array $key Cache key or keys list
 	 *
-	 * @return bool
+	 * @return bool|array
 	 */
-	public function del(string $key){
+	public function del($key){
 		
 		// check params
 		if(empty($key)){

@@ -262,6 +262,19 @@ class MemcachedManager{
 	}
 	
 	/**
+	 * Get server pool statistics
+	 *
+	 * @return bool|array FALSE - if is error | Array of server statistics, one entry per server.
+	 */
+	public function getStats(){
+		if(!$this->setInstanceMemcached()){
+			return false;
+		}
+		
+		return $this->instanceMemcached->getStats();
+	}
+	
+	/**
 	 * Creating new Memcached instance and adding server.
 	 *
 	 * @uses \XrTools\DBM\MemcachedManager::$instanceMemcached
